@@ -4,9 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       board:
-        description: "Board to build manually"
+        description: "Board folder name (ex: bread-compact-wifi)"
         required: true
-        default: "robert_s3"
+        default: "bread-compact-wifi"
+
+      variant:
+        description: "Variant name from config.json (ex: bread-compact-wifi-128x64)"
+        required: true
+        default: "bread-compact-wifi"
 
   push:
     branches:
@@ -51,8 +56,11 @@ jobs:
           # -------------------------------
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             BOARD="${{ github.event.inputs.board }}"
-            echo "Manual build for board: $BOARD"
-            echo "variants=[{\"board\":\"$BOARD\",\"name\":\"default\",\"full_name\":\"${BOARD}_default\"}]" >> $GITHUB_OUTPUT
+            VARIANT="${{ github.event.inputs.variant }}"
+
+            echo "Manual build for board: $BOARD variant: $VARIANT"
+
+            echo "variants=[{\"board\":\"$BOARD\",\"name\":\"$VARIANT\",\"full_name\":\"${BOARD}_${VARIANT}\"}]" >> $GITHUB_OUTPUT
             exit 0
           fi
 
